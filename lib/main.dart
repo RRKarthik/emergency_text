@@ -1,8 +1,18 @@
 import 'package:emergency_text/button_screen.dart';
 import 'package:flutter/material.dart';
+import 'prefs.dart';
 
-void main() {
-  runApp(MyApp());
+Prefs prefs = Prefs();
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await prefs.getAppHistory();
+  bool state = prefs.isNew ?? false;
+  runApp(
+    MaterialApp(
+      home: state == true ? ButtonScreen() : MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -22,6 +32,8 @@ class Home extends StatelessWidget {
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
+            prefs.setAppHistory();
+            prefs.setMob(phoneNo);
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => ButtonScreen()),
